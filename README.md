@@ -10,6 +10,12 @@ This hosted version allows you to play the game directly in your web browser wit
 
 This project is a simple Street Fighter game implemented using JavaScript and HTML5 canvas. It features classic characters like Ryu and Ken, along with various sound effects and stages.
 
+## Start Local
+
+```bash
+npm run dev
+```
+
 ## Game Controls
 
 The game controls are as follows:
