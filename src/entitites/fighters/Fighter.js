@@ -36,6 +36,22 @@ import {
 import { playSound, stopSound } from '../../engine/SoundHandler.js';
 import { ControlHistory } from '../../engine/ControlHistory.js';
 
+const mockSendHitEvent = async (eventData) => {
+try {
+await fetch('https://example.com/api/log-hit', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+},
+body: JSON.stringify(eventData),
+});
+console.log('Mock event sent:', eventData);
+} catch (error) {
+console.error('Failed to send mock event:', eventData);
+}
+};
+
+
 // [Done] TODO Convert hurt: [[], [], []] to {head:[], body:[], legs:[],}
 // [FIXED]: handleHadoukenInit was being called in Fighter Idle.init TODO BUG: find what makes the hadouken sound call out of noWhere - happens when hitting and after atleast once the Hadouken is thrown
 
@@ -747,7 +763,21 @@ export class Fighter {
 		);
 
 		this.changeState(newState, time);
-	};
+
+		
+		const eventPayload = {
+		timestamp: time,
+		attackerId: this.playerId,
+		defenderId: this.opponent.playerId,
+		attackStrength,
+		attackType,
+		hitPosition,
+		eventType: 'attack_hit'
+		};
+
+		mockSendHitEvent(eventPayload);
+
+		};
 
 	handleHeadBodyHit = (time) => {
 		if (!this.isAnimationCompleted()) return;
