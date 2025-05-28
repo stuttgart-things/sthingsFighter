@@ -36,15 +36,24 @@ import {
 import { playSound, stopSound } from '../../engine/SoundHandler.js';
 import { ControlHistory } from '../../engine/ControlHistory.js';
 
+const endpoint = 'https://panda.sthings.dev/generic';
+const token = 'IhrGeheimerToken'
+
 const mockSendHitEvent = async (eventData) => {
 try {
-await fetch('https://example.com/api/log-hit', {
+await fetch(endpoint, {
 method: 'POST',
 headers: {
 'Content-Type': 'application/json',
+'X-Auth-Token': token
 },
 body: JSON.stringify(eventData),
 });
+
+if (!response.ok) {
+throw new Error(`Server responded with ${response.status}`);
+}
+
 console.log('Mock event sent:', eventData);
 } catch (error) {
 console.error('Failed to send mock event:', eventData);
@@ -764,7 +773,6 @@ export class Fighter {
 
 		this.changeState(newState, time);
 
-		
 		const eventPayload = {
 		timestamp: time,
 		attackerId: this.playerId,
@@ -775,6 +783,20 @@ export class Fighter {
 		eventType: 'attack_hit'
 		};
 
+		const payload = {
+		title: 'Street Fighter Hit Event',
+		message: JSON.stringify(eventPayload, null, 2), // Embed eventPayload as a JSON string
+		severity: 'INFO',
+		author: 'Streetfighter',
+		timestamp: new Date().toISOString(),
+		system: 'geekom',
+		tags: 'game,hit,event',
+		assigneeaddress: 'admin@example.com',
+		assigneename: 'Ryu',
+		artifacts: 'GameLog',
+		url: 'https://github.com/stuttgart-things/sthingsFighter'
+		};
+		
 		mockSendHitEvent(eventPayload);
 
 		};
