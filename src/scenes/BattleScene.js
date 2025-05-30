@@ -27,6 +27,7 @@ import { KenStage } from '../entitites/stage/KenStage.js';
 import { gameState, resetGameState } from '../states/gameState.js';
 import { StartScene } from './StartScene.js';
 import { resetHealth } from '../states/healthState.js';
+import { startSSE } from '../states/receiveEvents.js';
 
 export class BattleScene {
 	image = document.getElementById('Winner');
@@ -48,6 +49,7 @@ export class BattleScene {
 		];
 		resetGameState();
 		this.startRound();
+		startSSE('http://localhost:3000/events');
 	}
 
 	getFighterClass = (id) => {

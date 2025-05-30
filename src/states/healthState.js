@@ -1,5 +1,3 @@
-
-
 export const HEALTH_MAX_HIT_POINTS_STATE = 200;
 
 export const currentHealth = {

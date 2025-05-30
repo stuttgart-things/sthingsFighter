@@ -813,16 +813,24 @@ export class Fighter {
 			eventType: 'attack_hit'
 		};
 
+		const severityMap = {
+		  light: 'CHAOS1',
+		  medium: 'CHAOS2',
+		  heavy: 'CHAOS3'
+		};
+
+		const severity = severityMap[attackStrength] || 'INFO'
+
 		const payload = {
 			title: 'Street Fighter Hit Event',
 			message: JSON.stringify(eventPayload, null, 2), // Embed eventPayload as a JSON string
-			severity: 'INFO',
+			severity: severity,
 			author: 'Streetfighter',
 			timestamp: new Date().toISOString(),
 			system: 'geekom',
 			tags: 'game,hit,event',
 			assigneeaddress: 'admin@example.com',
-			assigneename: 'Ryu',
+			assigneename: 'sthingsFighter',
 			artifacts: 'GameLog',
 			url: 'https://github.com/stuttgart-things/sthingsFighter'
 		};
