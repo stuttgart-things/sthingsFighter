@@ -1,6 +1,7 @@
 import { SCENE_WIDTH } from '../constants/stage.js';
 import { LOGO_FLASH_DELAY } from '../constants/battle.js';
 import { BattleScene } from './BattleScene.js';
+import { generateSessionId } from '../states/generateGameSessionID.js';
 
 export class StartScene {
 	image = document.getElementById('Controls');
@@ -18,6 +19,7 @@ export class StartScene {
 	endStartScene = () => {
 		this.changeScene(BattleScene);
 		window.removeEventListener('click', this.endStartScene);
+		generateSessionId();
 	};
 
 	constructor(changeScene) {

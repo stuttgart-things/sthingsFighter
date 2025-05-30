@@ -26,6 +26,7 @@ import { StatusBar } from '../entitites/overlays/StatusBar.js';
 import { KenStage } from '../entitites/stage/KenStage.js';
 import { gameState, resetGameState } from '../states/gameState.js';
 import { StartScene } from './StartScene.js';
+import { resetHealth } from '../states/healthState.js';
 
 export class BattleScene {
 	image = document.getElementById('Winner');
@@ -156,6 +157,10 @@ export class BattleScene {
 			this.fighters[0].changeState(FighterState.KO, time);
 			this.winnerId = 1;
 		}
+
+		// Reset health for next round
+		resetHealth();
+
 		this.goToStartScene();
 	};
 

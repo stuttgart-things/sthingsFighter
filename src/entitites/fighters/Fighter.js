@@ -35,30 +35,43 @@ import {
 } from '../../constants/sounds.js';
 import { playSound, stopSound } from '../../engine/SoundHandler.js';
 import { ControlHistory } from '../../engine/ControlHistory.js';
+import { currentHealth } from '../../states/healthState.js';
+import { getSessionId } from '../../states/generateGameSessionID.js';
 
-const endpoint = 'https://panda.sthings.dev/generic';
+// FOR node.js, you might need to disable SSL verification for testing purposes. (for vite projects see /vite.config.js)
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+// import https from 'https';
+
+const endpoint = '/generic'; //Enter whole hostname here when using node.js
 const token = 'IhrGeheimerToken'
 
 const mockSendHitEvent = async (eventData) => {
-try {
-await fetch(endpoint, {
-method: 'POST',
-headers: {
-'Content-Type': 'application/json',
-'X-Auth-Token': token
-},
-body: JSON.stringify(eventData),
-});
+	try {
+		const response = await fetch(endpoint, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-Auth-Token': token
+			},
+			body: JSON.stringify(eventData),
+			// Disable SSL verification for testing purposes uncomment next line (node.js)
+			// agent: new https.Agent({ rejectUnauthorized: false })
+		});
 
-if (!response.ok) {
-throw new Error(`Server responded with ${response.status}`);
-}
-
-console.log('Mock event sent:', eventData);
-} catch (error) {
-console.error('Failed to send mock event:', eventData);
-}
+	if (!response.ok) { throw new Error(`Server responded with ${response.status}`); }
+	
+	const result = await response.text();
+    console.log('Server response:', result);
+  	} catch (err) {
+    	console.error('Fetch error:', err);
+		}
 };
+
+//const HEALTH_MAX_HIT_POINTS_STATE = 200;
+//let currentHealth = {
+//  Ryu: HEALTH_MAX_HIT_POINTS_STATE,
+//  Ken: HEALTH_MAX_HIT_POINTS_STATE
+//};
 
 
 // [Done] TODO Convert hurt: [[], [], []] to {head:[], body:[], legs:[],}
@@ -773,31 +786,48 @@ export class Fighter {
 
 		this.changeState(newState, time);
 
+		const damageValue =
+		  attackStrength === "light" ? 12 :
+		  attackStrength === "medium" ? 20 :
+		  attackStrength === "heavy" ? 28 :
+		  0;
+
+		const attackerName = this.playerId === 1 ? "Ryu" : this.playerId === 0 ? "Ken" : this.playerId;
+		const defenderName = this.opponent.playerId === 1 ? "Ryu" : this.opponent.playerId === 0 ? "Ken" : this.opponent.playerId;
+		
+		// Update current health
+		currentHealth[defenderName] = Math.max(0, currentHealth[defenderName]  - damageValue);
+
 		const eventPayload = {
-		timestamp: time,
-		attackerId: this.playerId,
-		defenderId: this.opponent.playerId,
-		attackStrength,
-		attackType,
-		hitPosition,
-		eventType: 'attack_hit'
+			gameSession: getSessionId(),
+			timestamp: time,
+			attackerId: attackerName,
+			defenderId: defenderName,
+			damage: `${attackStrength} hit - ${damageValue} Damage`,
+			currentHealth: {
+			    Ryu: currentHealth.Ryu,
+			    Ken: currentHealth.Ken
+			},
+			attackType,
+			hitPosition,
+			eventType: 'attack_hit'
 		};
 
 		const payload = {
-		title: 'Street Fighter Hit Event',
-		message: JSON.stringify(eventPayload, null, 2), // Embed eventPayload as a JSON string
-		severity: 'INFO',
-		author: 'Streetfighter',
-		timestamp: new Date().toISOString(),
-		system: 'geekom',
-		tags: 'game,hit,event',
-		assigneeaddress: 'admin@example.com',
-		assigneename: 'Ryu',
-		artifacts: 'GameLog',
-		url: 'https://github.com/stuttgart-things/sthingsFighter'
+			title: 'Street Fighter Hit Event',
+			message: JSON.stringify(eventPayload, null, 2), // Embed eventPayload as a JSON string
+			severity: 'INFO',
+			author: 'Streetfighter',
+			timestamp: new Date().toISOString(),
+			system: 'geekom',
+			tags: 'game,hit,event',
+			assigneeaddress: 'admin@example.com',
+			assigneename: 'Ryu',
+			artifacts: 'GameLog',
+			url: 'https://github.com/stuttgart-things/sthingsFighter'
 		};
 		
-		mockSendHitEvent(eventPayload);
+		mockSendHitEvent(payload);
 
 		};
 
