@@ -25,7 +25,7 @@ app.get('/events', (req, res) => {
     res.write(`data: ${JSON.stringify(data)}\n\n`);
   };
 
-  const interval = setInterval(sendEvent, 2000); // Send every 2 seconds
+  const interval = setInterval(sendEvent, 2000); // Send time interval 1000 = 1 second
 
   req.on('close', () => {
     clearInterval(interval);

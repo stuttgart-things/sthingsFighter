@@ -17,7 +17,7 @@ export class StartScene {
 	sceneEnded = false;
 
 	endStartScene = () => {
-		this.changeScene(BattleScene);
+		const battleSceneInstance = this.changeScene(BattleScene);
 		window.removeEventListener('click', this.endStartScene);
 		generateSessionId();
 	};
