@@ -29,6 +29,8 @@ import { StartScene } from './StartScene.js';
 import { resetHealth } from '../states/healthState.js';
 import { startSSE } from '../states/receiveEvents.js';
 
+const host = import.meta.env.VITE_HOST;
+
 export class BattleScene {
 	image = document.getElementById('Winner');
 	fighters = [];
@@ -40,7 +42,7 @@ export class BattleScene {
 	winnerId = undefined;
 
 	// hovering text
-	text = 'YOUR CUSTOM TEXT HERE';
+	text = 'placeholder';
 	repeatTime = 2; // Number of times the text repeats across the screen
 	position = 10;  // Starting X position of the text
 	showText = false;
@@ -76,7 +78,7 @@ export class BattleScene {
 		];
 		resetGameState();
 		this.startRound();
-		startSSE('http://localhost:3000/events', this); 
+		startSSE(host, this); 
 	}
 
 	getFighterClass = (id) => {

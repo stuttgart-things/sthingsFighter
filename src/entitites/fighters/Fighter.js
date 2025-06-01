@@ -42,8 +42,13 @@ import { getSessionId } from '../../states/generateGameSessionID.js';
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 // import https from 'https';
 
-const endpoint = '/generic'; //Enter whole hostname here when using node.js
-const token = 'IhrGeheimerToken'
+// ENV VARIABLE LOGIC FOR NODE.JS:
+// require('dotenv').config(); // Load environment variables
+// const endpoint = process.env.ENDPOINT
+// const token = process.env.TOKEN
+
+const endpoint = import.meta.env.VITE_ENDPOINT;
+const token = import.meta.env.VITE_TOKEN;
 
 const mockSendHitEvent = async (eventData) => {
 	try {
@@ -825,7 +830,7 @@ export class Fighter {
 			title: 'Street Fighter Hit Event',
 			message: JSON.stringify(eventPayload, null, 2), // Embed eventPayload as a JSON string
 			severity: severity,
-			author: 'Streetfighter',
+			author: 'sthingsFighter',
 			timestamp: new Date().toISOString(),
 			system: 'geekom',
 			tags: 'game,hit,event',
