@@ -26,6 +26,11 @@ import { StatusBar } from '../entitites/overlays/StatusBar.js';
 import { KenStage } from '../entitites/stage/KenStage.js';
 import { gameState, resetGameState } from '../states/gameState.js';
 import { StartScene } from './StartScene.js';
+import { resetHealth } from '../states/healthState.js';
+import { startSSE } from '../states/receiveEvents.js';
+
+const host = import.meta.env.VITE_HOST;
+const CENTER_X = SCENE_WIDTH / 2;
 
 export class BattleScene {
 	image = document.getElementById('Winner');
@@ -37,6 +42,79 @@ export class BattleScene {
 	battleEnded = false;
 	winnerId = undefined;
 
+	// hovering text
+	//text = 'placeholder';
+	//repeatTime = 1; // Number of times the text repeats across the screen
+	//position = 10;  // Starting X position of the text
+	//showText = false;
+
+	//updateTextPosition = (time) => {
+	//	if (!this.showText) return;
+	//	this.position -= time.secondsPassed * 100;
+	//};
+
+
+	rightToCenterText = '';
+	rightToCenterPosition = SCENE_WIDTH;
+	showRightToCenter = false;
+
+	centerToLeftText = '';
+	centerToLeftPosition = SCENE_WIDTH / 2;
+	showCenterToLeft = false;
+
+
+	updateTextPosition = (time) => {
+	if (this.showRightToCenter) {
+		const textWidth = this.context?.measureText(this.rightToCenterText).width || 100;
+		const stopPosition = SCENE_WIDTH / 2 - textWidth / 2;
+		if (this.rightToCenterPosition > stopPosition) {
+			this.rightToCenterPosition -= time.secondsPassed * 100;
+		} else {
+			this.rightToCenterPosition = stopPosition;
+		}
+	}
+
+	if (this.showCenterToLeft) {
+		this.centerToLeftPosition -= time.secondsPassed * 100;
+		const textWidth = this.context?.measureText(this.centerToLeftText).width || 100;
+		if (this.centerToLeftPosition < -textWidth) {
+			this.showCenterToLeft = false; // Hide when off-screen
+		}
+	}
+	};
+
+
+//		drawText = (context) => {
+//		if (!this.showText) return;
+//
+//		context.fillStyle = 'black';
+//		context.font = '12px Arial';
+//		const textWidth = context.measureText(this.text).width;
+//
+//		for (let i = 0; i < this.repeatTime; i++) {
+//			context.fillText(this.text, this.position + i * (textWidth + 30), 18);
+//		}
+//
+//		if (this.position < (-textWidth + -30) * this.repeatTime) {
+//			this.position = SCENE_WIDTH;
+//		}
+//	};
+
+	drawText = (context) => {
+		this.context = context;
+		context.fillStyle = 'black';
+		context.font = '12px Arial';
+
+		if (this.showRightToCenter) {
+			context.fillText(this.rightToCenterText, this.rightToCenterPosition, 18);
+		}
+
+		if (this.showCenterToLeft) {
+			context.fillText(this.centerToLeftText, this.centerToLeftPosition, 36);
+		}
+	};
+
+
 	constructor(changeScene) {
 		this.changeScene = changeScene;
 		this.stage = new KenStage();
@@ -47,6 +125,7 @@ export class BattleScene {
 		];
 		resetGameState();
 		this.startRound();
+		startSSE(host, this); 
 	}
 
 	getFighterClass = (id) => {
@@ -156,6 +235,10 @@ export class BattleScene {
 			this.fighters[0].changeState(FighterState.KO, time);
 			this.winnerId = 1;
 		}
+
+		// Reset health for next round
+		resetHealth();
+
 		this.goToStartScene();
 	};
 
@@ -182,6 +265,7 @@ export class BattleScene {
 		this.camera.update(time);
 		this.updateOverlays(time);
 		this.updateFighterHP(time);
+		this.updateTextPosition(time);
 	};
 
 	drawFighters(context) {
@@ -208,5 +292,6 @@ export class BattleScene {
 		this.entities.draw(context, this.camera);
 		this.stage.drawForeground(context, this.camera);
 		this.drawOverlays(context);
+		this.drawText(context);
 	};
 }
