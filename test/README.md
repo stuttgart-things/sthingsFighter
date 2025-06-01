@@ -1,15 +1,25 @@
-## Testing with node server
+## Testing with node server as sse
 
 ### REQUIREMENTS
 
+#### env vars
 ```bash
-# Change in BattleScene.js url of startSSE() function
-startSSE(http://localhost:3000/events)
+cat <<EOF > .env
+VITE_TOKEN=''
+VITE_ENDPOINT=''
+VITE_HOST=''
+VITE_SSE_PROXY=''
+VITE_GENERIC_PROXY=''
+EOF
+```
 
-# download node server packages if not present
+#### download packages
+
+```bash
 npm install cors
 npm install express
 npm install ts-node
+npm install dotenv
 ```
 
 ### START
