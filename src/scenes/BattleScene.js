@@ -30,6 +30,7 @@ import { resetHealth } from '../states/healthState.js';
 import { startSSE } from '../states/receiveEvents.js';
 
 const host = import.meta.env.VITE_HOST;
+const CENTER_X = SCENE_WIDTH / 2;
 
 export class BattleScene {
 	image = document.getElementById('Winner');
@@ -42,31 +43,77 @@ export class BattleScene {
 	winnerId = undefined;
 
 	// hovering text
-	text = 'placeholder';
-	repeatTime = 2; // Number of times the text repeats across the screen
-	position = 10;  // Starting X position of the text
-	showText = false;
+	//text = 'placeholder';
+	//repeatTime = 1; // Number of times the text repeats across the screen
+	//position = 10;  // Starting X position of the text
+	//showText = false;
+
+	//updateTextPosition = (time) => {
+	//	if (!this.showText) return;
+	//	this.position -= time.secondsPassed * 100;
+	//};
+
+
+	rightToCenterText = '';
+	rightToCenterPosition = SCENE_WIDTH;
+	showRightToCenter = false;
+
+	centerToLeftText = '';
+	centerToLeftPosition = SCENE_WIDTH / 2;
+	showCenterToLeft = false;
+
 
 	updateTextPosition = (time) => {
-		if (!this.showText) return;
-		this.position -= time.secondsPassed * 100;
+	if (this.showRightToCenter) {
+		const textWidth = this.context?.measureText(this.rightToCenterText).width || 100;
+		const stopPosition = SCENE_WIDTH / 2 - textWidth / 2;
+		if (this.rightToCenterPosition > stopPosition) {
+			this.rightToCenterPosition -= time.secondsPassed * 100;
+		} else {
+			this.rightToCenterPosition = stopPosition;
+		}
+	}
+
+	if (this.showCenterToLeft) {
+		this.centerToLeftPosition -= time.secondsPassed * 100;
+		const textWidth = this.context?.measureText(this.centerToLeftText).width || 100;
+		if (this.centerToLeftPosition < -textWidth) {
+			this.showCenterToLeft = false; // Hide when off-screen
+		}
+	}
 	};
+
+
+//		drawText = (context) => {
+//		if (!this.showText) return;
+//
+//		context.fillStyle = 'black';
+//		context.font = '12px Arial';
+//		const textWidth = context.measureText(this.text).width;
+//
+//		for (let i = 0; i < this.repeatTime; i++) {
+//			context.fillText(this.text, this.position + i * (textWidth + 30), 18);
+//		}
+//
+//		if (this.position < (-textWidth + -30) * this.repeatTime) {
+//			this.position = SCENE_WIDTH;
+//		}
+//	};
 
 	drawText = (context) => {
-		if (!this.showText) return;
-
+		this.context = context;
 		context.fillStyle = 'black';
 		context.font = '12px Arial';
-		const textWidth = context.measureText(this.text).width;
 
-		for (let i = 0; i < this.repeatTime; i++) {
-			context.fillText(this.text, this.position + i * (textWidth + 30), 18);
+		if (this.showRightToCenter) {
+			context.fillText(this.rightToCenterText, this.rightToCenterPosition, 18);
 		}
 
-		if (this.position < (-textWidth + -30) * this.repeatTime) {
-			this.position = SCENE_WIDTH;
+		if (this.showCenterToLeft) {
+			context.fillText(this.centerToLeftText, this.centerToLeftPosition, 36);
 		}
 	};
+
 
 	constructor(changeScene) {
 		this.changeScene = changeScene;

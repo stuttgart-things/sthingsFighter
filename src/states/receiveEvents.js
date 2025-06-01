@@ -1,4 +1,7 @@
 import { BattleScene } from "../scenes/BattleScene";
+import {
+  SCENE_WIDTH,
+} from '../constants/stage.js';
 
 async function isServerReachable(url, timeout = 5000) {
   try {
@@ -46,9 +49,19 @@ export async function startSSE(url, battleSceneInstance) {
     const data = JSON.parse(event.data);
     console.log('SSE message received:', data);
 
-    // Update the instance
-    battleSceneInstance.text = data.message;
-    battleSceneInstance.showText = true;
+
+    if (data.key.includes('ken')) {
+      battleSceneInstance.rightToCenterText = data.message;
+      battleSceneInstance.rightToCenterPosition = SCENE_WIDTH;
+      battleSceneInstance.showRightToCenter = true;
+    }
+
+    if (data.key.includes('ryu')) {
+      battleSceneInstance.centerToLeftText = data.message;
+      battleSceneInstance.centerToLeftPosition = SCENE_WIDTH / 2;
+      battleSceneInstance.showCenterToLeft = true;
+    }
+
 
   };
 
