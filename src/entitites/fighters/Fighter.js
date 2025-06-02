@@ -832,7 +832,7 @@ export class Fighter {
 			severity: severity,
 			author: 'sthingsFighter',
 			timestamp: new Date().toISOString(),
-			system: 'geekom',
+			system: 'sthings-fighter',
 			tags: 'game,hit,event',
 			assigneeaddress: 'admin@example.com',
 			assigneename: 'sthingsFighter',
