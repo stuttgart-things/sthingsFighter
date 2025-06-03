@@ -827,7 +827,7 @@ export class Fighter {
 		const severity = severityMap[attackStrength] || 'INFO'
 
 		const payload = {
-			title: 'Street Fighter Hit Event',
+			title: 'Sthings Fighter Hit Event',
 			message: JSON.stringify(eventPayload, null, 2), // Embed eventPayload as a JSON string
 			severity: severity,
 			author: 'sthingsFighter',
