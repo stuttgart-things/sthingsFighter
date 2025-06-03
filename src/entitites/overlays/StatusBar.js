@@ -203,9 +203,10 @@ export class StatusBar {
 
 		const timeFrame = TIME_FRAME_KEYS[Number(this.useFlashFrames)];
 
-		// Adjusted spacing: 16px between digits
-		const startX = 162;
+		const digitWidth = 14;
 		const spacing = 16;
+		const totalWidth = digitWidth * 3 + spacing * 2; // 74px
+		const startX = (SCENE_WIDTH - totalWidth) / 2; // Center within scene
 			
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, startX, 33);
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, startX + spacing, 33);
