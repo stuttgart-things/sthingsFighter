@@ -203,9 +203,14 @@ export class StatusBar {
 
 		const timeFrame = TIME_FRAME_KEYS[Number(this.useFlashFrames)];
 
-		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, 178, 33);
-		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, 194, 33);
-		this.drawFrame(context, `${timeFrame}-${timeString.charAt(2)}`, 194, 33);
+		// Adjusted spacing: 16px between digits
+		const startX = 162;
+		const spacing = 16;
+			
+		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, startX, 33);
+		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, startX + spacing, 33);
+		this.drawFrame(context, `${timeFrame}-${timeString.charAt(2)}`, startX + spacing * 2, 33);
+
 	}
 
 	drawNames(context) {
