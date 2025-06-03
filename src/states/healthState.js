@@ -1,4 +1,4 @@
-export const HEALTH_MAX_HIT_POINTS_STATE = 200;
+export const HEALTH_MAX_HIT_POINTS_STATE = 500; //default 200 - also change in /constants/battle.js 
 
 export const currentHealth = {
   Ryu: HEALTH_MAX_HIT_POINTS_STATE,
