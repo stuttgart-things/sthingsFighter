@@ -31,7 +31,10 @@ func main() {
 				log.Println("Client closed connection")
 				return
 			case t := <-ticker.C:
-				data := fmt.Sprintf("data: {\"timestamp\": \"%s\"}\n\n", t.Format(time.RFC3339))
+				keys := []string{"ken", "ryu"}
+				rand.Seed(time.Now().UnixNano()) // Seed the random number generator
+				randomKey := keys[rand.Intn(len(keys))]
+				data := fmt.Sprintf("data: {\"key\": \"%s\", \"timestamp\": \"%s\"}\n\n", randomKey, t.Format(time.RFC3339))
 				_, err := fmt.Fprint(w, data)
 			if err != nil {
 				log.Println("Error writing to client:", err)
