@@ -7,6 +7,7 @@ import {
 	KO_FLASH_KEYS,
 	TIME_DELAY,
 	TIME_FLASH_DELAY,
+	SCENE_WIDTH,
 	TIME_FRAME_KEYS,
 } from '../../constants/battle.js';
 import { FighterId } from '../../constants/fighter.js';
@@ -207,7 +208,7 @@ export class StatusBar {
 		const spacing = 16;
 		const totalWidth = digitWidth * 3 + spacing * 2; // 74px
 		const startX = (SCENE_WIDTH - totalWidth) / 2; // Center within scene
-			
+
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, startX, 33);
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, startX + spacing, 33);
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(2)}`, startX + spacing * 2, 33);
