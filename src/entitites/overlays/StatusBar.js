@@ -210,11 +210,12 @@ export class StatusBar {
 		const digitWidth = 14;
 		const spacing = 16;
 		const totalWidth = digitWidth * 3 + spacing * 2; // 74px
-		const startX = (SCENE_WIDTH - totalWidth) / 2; // Center within scene
-
+		const startX = 192 - totalWidth / 2; // Centered over KO image
+			
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, startX, 33);
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, startX + spacing, 33);
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(2)}`, startX + spacing * 2, 33);
+
 
 	}
 
