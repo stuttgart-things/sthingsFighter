@@ -208,7 +208,7 @@ export class StatusBar {
 		const timeFrame = TIME_FRAME_KEYS[Number(this.useFlashFrames)];
 
 		const spacing = 16;
-		const startX = 158; // Align second digit to center under KO image
+		const startX = 140; // Align second digit to center under KO image
 
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, startX, 33);
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, startX + spacing, 33);
