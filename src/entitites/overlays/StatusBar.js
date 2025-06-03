@@ -7,9 +7,12 @@ import {
 	KO_FLASH_KEYS,
 	TIME_DELAY,
 	TIME_FLASH_DELAY,
-	SCENE_WIDTH,
 	TIME_FRAME_KEYS,
 } from '../../constants/battle.js';
+import {
+	SCENE_WIDTH,
+} from '../../constants/stage.js';
+	
 import { FighterId } from '../../constants/fighter.js';
 import { FPS } from '../../constants/game.js';
 import { gameState } from '../../states/gameState.js';
