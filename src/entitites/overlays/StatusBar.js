@@ -199,12 +199,13 @@ export class StatusBar {
 	}
 
 	drawTime(context) {
-		const timeString = String(Math.max(this.time, 0)).padStart(2, '0');
+		const timeString = String(Math.max(this.time, 0)).padStart(3, '0');
 
 		const timeFrame = TIME_FRAME_KEYS[Number(this.useFlashFrames)];
 
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, 178, 33);
 		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, 194, 33);
+		this.drawFrame(context, `${timeFrame}-${timeString.charAt(2)}`, 194, 33);
 	}
 
 	drawNames(context) {
