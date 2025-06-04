@@ -818,10 +818,15 @@ export class Fighter {
 			eventType: 'attack_hit'
 		};
 
+		
+		const suffix = attackerName.toLowerCase() === 'ryu' ? '-ryu' :
+					   attackerName.toLowerCase() === 'ken' ? '-ken' : '';
+
+
 		const severityMap = {
-		  light: 'CHAOS1',
-		  medium: 'CHAOS2',
-		  heavy: 'CHAOS3'
+		  light: `CHAOS1${suffix}`,
+		  medium: `CHAOS2${suffix}`,
+		  heavy: `CHAOS3${suffix}`
 		};
 
 		const severity = severityMap[attackStrength] || 'INFO'
