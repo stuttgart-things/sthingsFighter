@@ -9,7 +9,11 @@ export default ({ mode }) => {
 return defineConfig({
   server: {
     proxy: {
-        '/events': env.VITE_SSE_PROXY || 'http://localhost:3000', // Proxy for SSE server
+        '/events': {
+          target: env.VITE_SSE_PROXY || 'http://localhost:3000',
+          changeOrigin: true,
+          ws: true,
+        }, // Proxy for SSE server
         '/generic': {
           target: env.VITE_GENERIC_PROXY,
           changeOrigin: true,
