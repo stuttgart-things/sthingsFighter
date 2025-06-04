@@ -34,7 +34,7 @@ function checkAndStartSSE(url, battleSceneInstance) {
 }
 
 export async function startSSE(url, battleSceneInstance) {
-
+  console.log(host)
   const reachable = await isServerReachable(url);
   if (!reachable) {
     console.log('Skipping polling: server not available.');
