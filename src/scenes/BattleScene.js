@@ -31,7 +31,7 @@ import { startSSE } from '../states/receiveEvents.js';
 
 const host = import.meta.env.VITE_HOST;
 const CENTER_X = SCENE_WIDTH / 2;
-const endpoint = import.meta.env.VITE_ENDPOINT + '/events';
+const endpoint = import.meta.env.VITE_SSE_PROXY + '/events';
 
 
 export function createListener(url, onMessage, onError) {
