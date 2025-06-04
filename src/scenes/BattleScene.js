@@ -61,13 +61,13 @@ export function createListener(url, onMessage, onError) {
 		try {
 			const data = JSON.parse(event.data);
 
-			if (data.includes('in namespace: ken')) {
+			if (data.message?.includes('namespace: ken'))  {
 			battleSceneInstance.rightToCenterText = data.message;
 			battleSceneInstance.rightToCenterPosition = SCENE_WIDTH;
 			battleSceneInstance.showRightToCenter = true;
 			}
 
-			if (data.includes('in namespace: ryu')) {
+			if (data.message?.includes('namespace: ryu'))  {
 			battleSceneInstance.centerToLeftText = data.message;
 			battleSceneInstance.centerToLeftPosition = SCENE_WIDTH / 2;
 			battleSceneInstance.showCenterToLeft = true;
