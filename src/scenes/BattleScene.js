@@ -34,21 +34,58 @@ const CENTER_X = SCENE_WIDTH / 2;
 const endpoint = import.meta.env.VITE_SSE_PROXY;
 
 
+//export function createListener(url, onMessage, onError) {
+//	const eventSource = new EventSource(url);
+//
+//	eventSource.onmessage = (event) => {
+//		console.log('SSE message received:', event.data);
+//		const data = JSON.parse(event.data);
+//		if (onMessage) onMessage(event.data);
+//	};
+//
+//	eventSource.onerror = (err) => {
+//	console.error('SSE error:', err);
+//	if (onError) onError(err);
+//		eventSource.close(); // Optional: auto-close on error
+//	};
+//
+//}
+
+
 export function createListener(url, onMessage, onError) {
 	const eventSource = new EventSource(url);
 
 	eventSource.onmessage = (event) => {
-	console.log('SSE message received:', event.data);
-	if (onMessage) onMessage(event.data);
+		console.log('SSE message received:', event.data);
+
+		try {
+			const data = JSON.parse(event.data);
+
+			if (data.key?.includes('ken')) {
+			battleSceneInstance.rightToCenterText = data.message;
+			battleSceneInstance.rightToCenterPosition = SCENE_WIDTH;
+			battleSceneInstance.showRightToCenter = true;
+			}
+
+			if (data.key?.includes('ryu')) {
+			battleSceneInstance.centerToLeftText = data.message;
+			battleSceneInstance.centerToLeftPosition = SCENE_WIDTH / 2;
+			battleSceneInstance.showCenterToLeft = true;
+			}
+
+			if (onMessage) onMessage(data);
+		} catch (err) {
+			console.error('Failed to parse SSE data:', err);
+		}	
 	};
 
 	eventSource.onerror = (err) => {
 	console.error('SSE error:', err);
 	if (onError) onError(err);
-		eventSource.close(); // Optional: auto-close on error
+	eventSource.close(); // Optional: auto-close on error
 	};
-
 }
+
 
 export class BattleScene {
 	image = document.getElementById('Winner');
