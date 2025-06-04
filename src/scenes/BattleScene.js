@@ -125,6 +125,7 @@ export class BattleScene {
 		];
 		resetGameState();
 		this.startRound();
+		console.log(host)
 		startSSE(host, this); 
 	}
 
