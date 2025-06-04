@@ -31,6 +31,24 @@ import { startSSE } from '../states/receiveEvents.js';
 
 const host = import.meta.env.VITE_HOST;
 const CENTER_X = SCENE_WIDTH / 2;
+const endpoint = import.meta.env.VITE_ENDPOINT + '/events';
+
+
+export function createListener(url, onMessage, onError) {
+	const eventSource = new EventSource(url);
+
+	eventSource.onmessage = (event) => {
+	console.log('SSE message received:', event.data);
+	if (onMessage) onMessage(event.data);
+	};
+
+	eventSource.onerror = (err) => {
+	console.error('SSE error:', err);
+	if (onError) onError(err);
+		eventSource.close(); // Optional: auto-close on error
+	};
+
+}
 
 export class BattleScene {
 	image = document.getElementById('Winner');
@@ -125,9 +143,16 @@ export class BattleScene {
 		];
 		resetGameState();
 		this.startRound();
-		console.log(host)
-		startSSE(host, this); 
-	}
+		createListener(endpoint, (data) => {
+			console.log('New event:', data);
+			// Update UI or state here
+		},
+		(error) => {
+			console.error('SSE connection failed:', error);
+		}
+		);
+			//startSSE(host, this); 
+		}
 
 	getFighterClass = (id) => {
 		switch (id) {
