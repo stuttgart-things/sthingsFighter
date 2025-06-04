@@ -180,10 +180,10 @@ export class BattleScene {
 		];
 		resetGameState();
 		this.startRound();
-		createListener(endpoint, this, (data) => {
+		createListener(endpoint, (data) => {
 			console.log('New event:', data);
 			// Update UI or state here
-		},
+		},this,
 		(error) => {
 			console.error('SSE connection failed:', error);
 		}
