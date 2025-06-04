@@ -52,7 +52,7 @@ const endpoint = import.meta.env.VITE_SSE_PROXY;
 //}
 
 
-export function createListener(url, onMessage, onError) {
+export function createListener(url, onMessage, battleSceneInstance, onError) {
 	const eventSource = new EventSource(url);
 
 	eventSource.onmessage = (event) => {
@@ -180,7 +180,7 @@ export class BattleScene {
 		];
 		resetGameState();
 		this.startRound();
-		createListener(endpoint, (data) => {
+		createListener(endpoint, this, (data) => {
 			console.log('New event:', data);
 			// Update UI or state here
 		},
