@@ -1,6 +1,6 @@
 import { FRAME_TIME } from './game.js';
 
-export const BATTLE_TIME = 99;
+export const BATTLE_TIME = 180;
 
 export const TIME_DELAY = 40 * FRAME_TIME;
 export const TIME_FLASH_DELAY = 3 * FRAME_TIME;
@@ -11,7 +11,7 @@ export const KO_FLASH_KEYS = ['ko-white', 'ko-black'];
 
 export const LOGO_FLASH_DELAY = [100 * FRAME_TIME, 20 * FRAME_TIME];
 
-export const HEALTH_MAX_HIT_POINTS = 200;
+export const HEALTH_MAX_HIT_POINTS = 500; //default 200 - also change in /states/healthState.js 
 
 const HEALTH_CRITICAL_HIT_POINTS_PERCENTAGE = 0.4;
 

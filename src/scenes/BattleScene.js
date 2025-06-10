@@ -26,6 +26,66 @@ import { StatusBar } from '../entitites/overlays/StatusBar.js';
 import { KenStage } from '../entitites/stage/KenStage.js';
 import { gameState, resetGameState } from '../states/gameState.js';
 import { StartScene } from './StartScene.js';
+import { resetHealth } from '../states/healthState.js';
+import { startSSE } from '../states/receiveEvents.js';
+
+const host = import.meta.env.VITE_HOST;
+const CENTER_X = SCENE_WIDTH / 2;
+const endpoint = import.meta.env.VITE_SSE_PROXY;
+
+
+//export function createListener(url, onMessage, onError) {
+//	const eventSource = new EventSource(url);
+//
+//	eventSource.onmessage = (event) => {
+//		console.log('SSE message received:', event.data);
+//		const data = JSON.parse(event.data);
+//		if (onMessage) onMessage(event.data);
+//	};
+//
+//	eventSource.onerror = (err) => {
+//	console.error('SSE error:', err);
+//	if (onError) onError(err);
+//		eventSource.close(); // Optional: auto-close on error
+//	};
+//
+//}
+
+
+export function createListener(url, onMessage, battleSceneInstance, onError) {
+	const eventSource = new EventSource(url);
+
+	eventSource.onmessage = (event) => {
+		console.log('SSE message received:', event.data);
+
+		try {
+			const data = JSON.parse(event.data);
+
+			if (data.message?.includes('namespace: ken'))  {
+			battleSceneInstance.rightToCenterText = data.message;
+			battleSceneInstance.rightToCenterPosition = SCENE_WIDTH;
+			battleSceneInstance.showRightToCenter = true;
+			}
+
+			if (data.message?.includes('namespace: ryu'))  {
+			battleSceneInstance.centerToLeftText = data.message;
+			battleSceneInstance.centerToLeftPosition = SCENE_WIDTH / 2;
+			battleSceneInstance.showCenterToLeft = true;
+			}
+
+			if (onMessage) onMessage(data);
+		} catch (err) {
+			console.error('Failed to parse SSE data:', err);
+		}	
+	};
+
+	eventSource.onerror = (err) => {
+	console.error('SSE error:', err);
+	if (onError) onError(err);
+	eventSource.close(); // Optional: auto-close on error
+	};
+}
+
 
 export class BattleScene {
 	image = document.getElementById('Winner');
@@ -37,6 +97,79 @@ export class BattleScene {
 	battleEnded = false;
 	winnerId = undefined;
 
+	// hovering text
+	//text = 'placeholder';
+	//repeatTime = 1; // Number of times the text repeats across the screen
+	//position = 10;  // Starting X position of the text
+	//showText = false;
+
+	//updateTextPosition = (time) => {
+	//	if (!this.showText) return;
+	//	this.position -= time.secondsPassed * 100;
+	//};
+
+
+	rightToCenterText = '';
+	rightToCenterPosition = SCENE_WIDTH;
+	showRightToCenter = false;
+
+	centerToLeftText = '';
+	centerToLeftPosition = SCENE_WIDTH / 2;
+	showCenterToLeft = false;
+
+
+	updateTextPosition = (time) => {
+	if (this.showRightToCenter) {
+		const textWidth = this.context?.measureText(this.rightToCenterText).width || 100;
+		const stopPosition = SCENE_WIDTH / 2 - textWidth / 2;
+		if (this.rightToCenterPosition > stopPosition) {
+			this.rightToCenterPosition -= time.secondsPassed * 100;
+		} else {
+			this.rightToCenterPosition = stopPosition;
+		}
+	}
+
+	if (this.showCenterToLeft) {
+		this.centerToLeftPosition -= time.secondsPassed * 100;
+		const textWidth = this.context?.measureText(this.centerToLeftText).width || 100;
+		if (this.centerToLeftPosition < -textWidth) {
+			this.showCenterToLeft = false; // Hide when off-screen
+		}
+	}
+	};
+
+
+//		drawText = (context) => {
+//		if (!this.showText) return;
+//
+//		context.fillStyle = 'black';
+//		context.font = '12px Arial';
+//		const textWidth = context.measureText(this.text).width;
+//
+//		for (let i = 0; i < this.repeatTime; i++) {
+//			context.fillText(this.text, this.position + i * (textWidth + 30), 18);
+//		}
+//
+//		if (this.position < (-textWidth + -30) * this.repeatTime) {
+//			this.position = SCENE_WIDTH;
+//		}
+//	};
+
+	drawText = (context) => {
+		this.context = context;
+		context.fillStyle = 'black';
+		context.font = '12px Arial';
+
+		if (this.showRightToCenter) {
+			context.fillText(this.rightToCenterText, this.rightToCenterPosition, 18);
+		}
+
+		if (this.showCenterToLeft) {
+			context.fillText(this.centerToLeftText, this.centerToLeftPosition, 36);
+		}
+	};
+
+
 	constructor(changeScene) {
 		this.changeScene = changeScene;
 		this.stage = new KenStage();
@@ -47,7 +180,16 @@ export class BattleScene {
 		];
 		resetGameState();
 		this.startRound();
-	}
+		createListener(endpoint, (data) => {
+			console.log('New event:', data);
+			// Update UI or state here
+		},this,
+		(error) => {
+			console.error('SSE connection failed:', error);
+		}
+		);
+			//startSSE(host, this); 
+		}
 
 	getFighterClass = (id) => {
 		switch (id) {
@@ -156,6 +298,10 @@ export class BattleScene {
 			this.fighters[0].changeState(FighterState.KO, time);
 			this.winnerId = 1;
 		}
+
+		// Reset health for next round
+		resetHealth();
+
 		this.goToStartScene();
 	};
 
@@ -182,6 +328,7 @@ export class BattleScene {
 		this.camera.update(time);
 		this.updateOverlays(time);
 		this.updateFighterHP(time);
+		this.updateTextPosition(time);
 	};
 
 	drawFighters(context) {
@@ -208,5 +355,6 @@ export class BattleScene {
 		this.entities.draw(context, this.camera);
 		this.stage.drawForeground(context, this.camera);
 		this.drawOverlays(context);
+		this.drawText(context);
 	};
 }

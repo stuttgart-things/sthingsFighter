@@ -9,6 +9,10 @@ import {
 	TIME_FLASH_DELAY,
 	TIME_FRAME_KEYS,
 } from '../../constants/battle.js';
+import {
+	SCENE_WIDTH,
+} from '../../constants/stage.js';
+	
 import { FighterId } from '../../constants/fighter.js';
 import { FPS } from '../../constants/game.js';
 import { gameState } from '../../states/gameState.js';
@@ -199,12 +203,21 @@ export class StatusBar {
 	}
 
 	drawTime(context) {
-		const timeString = String(Math.max(this.time, 0)).padStart(2, '0');
+		const timeString = String(Math.max(this.time, 0)).padStart(3, '0');
 
-		const timeFrame = TIME_FRAME_KEYS[Number(this.useFlashFrames)];
 
-		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, 178, 33);
-		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, 194, 33);
+		// Force flashing when time is 10 or less
+		const shouldFlash = this.time <= 10;
+		const timeFrame = TIME_FRAME_KEYS[Number(this.useFlashFrames && shouldFlash)];
+
+
+		const spacing = 16;
+		const startX = 170; // Align second digit to center under KO image
+
+		this.drawFrame(context, `${timeFrame}-${timeString.charAt(0)}`, startX, 33);
+		this.drawFrame(context, `${timeFrame}-${timeString.charAt(1)}`, startX + spacing, 33);
+		this.drawFrame(context, `${timeFrame}-${timeString.charAt(2)}`, startX + spacing * 2, 33);
+
 	}
 
 	drawNames(context) {
